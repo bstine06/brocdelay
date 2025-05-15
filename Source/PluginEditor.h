@@ -35,7 +35,7 @@ private:
     RotaryKnob gainKnob { "Gain", audioProcessor.apvts, ParamIDs::gain, true };
     RotaryKnob mixKnob { "Mix", audioProcessor.apvts, ParamIDs::mix };
     RotaryKnob delayTimeKnob { "Delay Time", audioProcessor.apvts, ParamIDs::delayTime };
-    RotaryKnob feedbackKnob { "Feedback", audioProcessor.apvts, ParamIDs::feedback };
+    RotaryKnob feedbackKnob { "Feedback", audioProcessor.apvts, ParamIDs::feedback, true };
     
     juce::Label footerCompliment;
     FooterLookAndFeel footerLookAndFeel;

@@ -108,6 +108,9 @@ void DelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     int maxDelayInSamples = int(std::ceil(numSamples));
     delayLine.setMaximumDelayInSamples(maxDelayInSamples);
     delayLine.reset();
+    
+    feedbackL = 0.0f;
+    feedbackR = 0.0f;
 }
 
 void DelayAudioProcessor::releaseResources()
@@ -162,18 +165,21 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
         float dryL = channelDataL[sample];
         float dryR = channelDataR[sample];
         
-        delayLine.pushSample(0, dryL);
-        delayLine.pushSample(1, dryR);
+        delayLine.pushSample(0, dryL + feedbackL);
+        delayLine.pushSample(1, dryR + feedbackR);
         
         float wetL = delayLine.popSample(0);
         float wetR = delayLine.popSample(1);
+        
+        feedbackL = wetL * params.feedback;
+        feedbackR = wetR * params.feedback;
         
         // create dry-wet gain curves for equal power across mix range
         float dryGain = std::cos (params.mix * juce::MathConstants<float>::halfPi);
         float wetGain = std::sin (params.mix * juce::MathConstants<float>::halfPi);
 
-        float mixL = dryL * dryGain + wetL * wetGain;
-        float mixR = dryR * dryGain + wetR * wetGain;
+        float mixL = (dryL * dryGain) + (wetL * wetGain * params.mix);
+        float mixR = (dryR * dryGain) + (wetR * wetGain * params.mix);
         
         channelDataL[sample] = mixL * params.gain;
         channelDataR[sample] = mixR * params.gain;

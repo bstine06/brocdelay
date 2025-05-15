@@ -106,7 +106,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterL
                 //Parameter ID
                 ParamIDs::feedback,
                 "Feedback",
-                juce::NormalisableRange<float>(0.0f, 100.0f, 1.0f),
+                juce::NormalisableRange<float>(-100.0f, 100.0f, 1.0f),
                 0.0f,
                 juce::AudioParameterFloatAttributes().withStringFromValueFunction(stringFromPercent)));
     
