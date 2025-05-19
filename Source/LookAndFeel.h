@@ -82,6 +82,28 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RotaryKnobLookAndFeel)
 };
 
+class SwitchLookAndFeel : public juce::LookAndFeel_V4
+{
+public:
+    SwitchLookAndFeel();
+    
+    static SwitchLookAndFeel* get()
+    {
+        static SwitchLookAndFeel instance;
+        return &instance;
+    }
+    
+    void drawToggleButton(juce::Graphics& g,
+                          juce::ToggleButton& toggleButton,
+                          bool shouldDrawButtonAsHighlighted,
+                          bool shouldDrawButtonAsDown) override;
+    
+private:
+    juce::DropShadow dropShadow { Colors::Knob::dropShadow, 6, { 0, 3 } };
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SwitchLookAndFeel)
+};
+
 class FooterLookAndFeel : public juce::LookAndFeel_V4
 {
 public:

@@ -13,6 +13,7 @@
 DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
+    
     delayGroup.setText("Delay");
     delayGroup.setTextLabelPosition(juce::Justification::horizontallyCentred);
     delayGroup.addAndMakeVisible(delayTimeKnob);
@@ -21,7 +22,7 @@ DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
     feedbackGroup.setText("Feedback");
     feedbackGroup.setTextLabelPosition(juce::Justification::horizontallyCentred);
     feedbackGroup.addAndMakeVisible(feedbackKnob);
-    feedbackGroup.addAndMakeVisible(stereoKnob);
+    feedbackGroup.addAndMakeVisible(flipFlopSwitch);
     addAndMakeVisible(feedbackGroup);
     
     outputGroup.setText("Output");
@@ -30,7 +31,7 @@ DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
     outputGroup.addAndMakeVisible(mixKnob);
     addAndMakeVisible(outputGroup);
     
-    footerCompliment.setText("you're doing a good job!", juce::dontSendNotification);
+    footerCompliment.setText("you're doing a good job! x2", juce::dontSendNotification);
     footerCompliment.setColour(juce::Label::textColourId, Colors::Footer::compliment);
     footerCompliment.setJustificationType(juce::Justification::centred);
     footerGroup.addAndMakeVisible(footerCompliment);
@@ -92,7 +93,7 @@ void DelayAudioProcessorEditor::resized()
     delayTimeKnob.setTopLeftPosition(20, 20);
 
     feedbackKnob.setTopLeftPosition(20, 20);
-    stereoKnob.setTopLeftPosition(feedbackKnob.getRight() + 10, feedbackKnob.getY());
+    flipFlopSwitch.setTopLeftPosition(feedbackKnob.getRight() + 10, feedbackKnob.getY());
     
     mixKnob.setTopLeftPosition(20, 20);
     gainKnob.setTopLeftPosition(mixKnob.getX(), mixKnob.getBottom() + 10);

@@ -9,6 +9,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "ProtectYourEars.h"
+#include "DSP.h"
 
 //==============================================================================
 DelayAudioProcessor::DelayAudioProcessor() :
@@ -122,7 +123,16 @@ void DelayAudioProcessor::releaseResources()
 #ifndef JucePlugin_PreferredChannelConfigurations
 bool DelayAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
-    return layouts.getMainOutputChannelSet() == juce::AudioChannelSet::stereo();
+    const auto mono = juce::AudioChannelSet::mono();
+    const auto stereo = juce::AudioChannelSet::stereo();
+    const auto mainIn = layouts.getMainInputChannelSet();
+    const auto mainOut = layouts.getMainOutputChannelSet();
+    
+    if (mainIn == mono && mainOut == mono) { return true; }
+    if (mainIn == mono && mainOut == stereo ) { return true; }
+    if (mainIn == stereo && mainOut == stereo ) { return true; }
+    
+    return false;
 }
 #endif
 
@@ -165,8 +175,16 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
         float dryL = channelDataL[sample];
         float dryR = channelDataR[sample];
         
-        delayLine.pushSample(0, dryL + feedbackL);
-        delayLine.pushSample(1, dryR + feedbackR);
+        bool flipFlop = apvts.getRawParameterValue("flipFlop")->load() > 0.5f;
+        
+        float fbInL = flipFlop ? feedbackR : feedbackL;
+        float fbInR = flipFlop ? feedbackL : feedbackR;
+        
+        //push affected signals into delay line
+        //L
+        delayLine.pushSample(0, dryL + fbInL);
+        //R
+        delayLine.pushSample(1, dryR + fbInR);
         
         float wetL = delayLine.popSample(0);
         float wetR = delayLine.popSample(1);

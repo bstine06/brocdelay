@@ -27,6 +27,8 @@ RotaryKnobLookAndFeel::RotaryKnobLookAndFeel()
     setColour(juce::CaretComponent::caretColourId, Colors::Knob::caret);
 }
 
+
+
 void RotaryKnobLookAndFeel::drawRotarySlider(juce::Graphics &g, int x, int y, int width, [[maybe_unused]] int height, float sliderPos, float rotaryStartAngle, float rotaryEndAngle, juce::Slider &slider)
 {
     // draw the circular knob within the supplied bounds
@@ -90,6 +92,38 @@ void RotaryKnobLookAndFeel::drawRotarySlider(juce::Graphics &g, int x, int y, in
         g.setColour(slider.findColour(juce::Slider::rotarySliderFillColourId));
         g.strokePath(valueArc, strokeType);
     }
+}
+
+SwitchLookAndFeel::SwitchLookAndFeel()
+{
+    setColour(juce::Label::textColourId, Colors::Knob::label);
+}
+
+void SwitchLookAndFeel::drawToggleButton(juce::Graphics& g,
+                                         juce::ToggleButton& toggleButton,
+                                         bool shouldDrawButtonAsHighlighted,
+                                         bool shouldDrawButtonAsDown)
+{
+    
+    auto bounds = toggleButton.getLocalBounds().toFloat();
+
+    // Background fill based on toggle state
+    if (toggleButton.getToggleState())
+        g.setColour(juce::Colours::green);  // ON state
+    else
+        g.setColour(juce::Colours::darkgrey);  // OFF state
+
+    g.fillRoundedRectangle(bounds, 6.0f);  // Rounded corners
+
+    // Optional border
+    g.setColour(juce::Colours::black);
+    g.drawRoundedRectangle(bounds, 6.0f, 1.5f);
+
+    // Text
+    g.setColour(juce::Colours::white);
+    g.setFont(Fonts::getFont(16));
+    g.drawFittedText(toggleButton.getButtonText(), bounds.toNearestInt(), juce::Justification::centred, 1);
+    
 }
 
 juce::Font RotaryKnobLookAndFeel::getLabelFont([[maybe_unused]] juce::Label& label)

@@ -12,6 +12,7 @@
 #include "PluginProcessor.h"
 #include "Parameters.h"
 #include "RotaryKnob.h"
+#include "Switch.h"
 #include "LookAndFeel.h"
 
 //==============================================================================
@@ -36,7 +37,9 @@ private:
     RotaryKnob mixKnob { "Mix", audioProcessor.apvts, ParamIDs::mix };
     RotaryKnob delayTimeKnob { "Delay Time", audioProcessor.apvts, ParamIDs::delayTime };
     RotaryKnob feedbackKnob { "Feedback", audioProcessor.apvts, ParamIDs::feedback, true };
-    RotaryKnob stereoKnob { "Stereo", audioProcessor.apvts, ParamIDs::stereo, true };
+    RotaryKnob inputStereoKnob { "Stereo", audioProcessor.apvts, ParamIDs::inputStereo };
+    Switch flipFlopSwitch { "Flip Flop", audioProcessor.apvts, ParamIDs::flipFlop };
+    
     
     juce::Label footerCompliment;
     FooterLookAndFeel footerLookAndFeel;
