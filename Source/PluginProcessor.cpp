@@ -163,8 +163,17 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
     
     float sampleRate = float(getSampleRate());
     
-    float* channelDataL = buffer.getWritePointer(0);
-    float* channelDataR = buffer.getWritePointer(1);
+    auto mainInput = getBusBuffer(buffer, true, 0);
+    auto mainInputChannels = mainInput.getNumChannels();
+    auto isMainInputStereo = mainInputChannels > 1;
+    const float* inputDataL = mainInput.getReadPointer(0);
+    const float* inputDataR = mainInput.getReadPointer(isMainInputStereo ? 1 : 0);
+    
+    auto mainOutput = getBusBuffer(buffer, false, 0);
+    auto mainOutputChannels = mainOutput.getNumChannels();
+    auto isMainOutputStereo = mainOutputChannels > 1;
+    float* outputDataL = mainOutput.getWritePointer(0);
+    float* outputDataR = mainOutput.getWritePointer(isMainOutputStereo ? 1 : 0);
     
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample) {
         
@@ -172,8 +181,8 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
         float delayInSamples = (params.delayTime / 1000.0f) * sampleRate;
         delayLine.setDelay(delayInSamples);
         
-        float dryL = channelDataL[sample];
-        float dryR = channelDataR[sample];
+        float dryL = inputDataL[sample];
+        float dryR = inputDataR[sample];
         
         bool flipFlop = apvts.getRawParameterValue("flipFlop")->load() > 0.5f;
         
@@ -199,8 +208,8 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
         float mixL = (dryL * dryGain) + (wetL * wetGain * params.mix);
         float mixR = (dryR * dryGain) + (wetR * wetGain * params.mix);
         
-        channelDataL[sample] = mixL * params.gain;
-        channelDataR[sample] = mixR * params.gain;
+        outputDataL[sample] = mixL * params.gain;
+        outputDataR[sample] = mixR * params.gain;
         
     }
     

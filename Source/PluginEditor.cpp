@@ -31,7 +31,7 @@ DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
     outputGroup.addAndMakeVisible(mixKnob);
     addAndMakeVisible(outputGroup);
     
-    footerCompliment.setText("you're doing a good job! x2", juce::dontSendNotification);
+    footerCompliment.setText("you're doing a good job!!", juce::dontSendNotification);
     footerCompliment.setColour(juce::Label::textColourId, Colors::Footer::compliment);
     footerCompliment.setJustificationType(juce::Justification::centred);
     footerGroup.addAndMakeVisible(footerCompliment);

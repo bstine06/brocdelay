@@ -3,7 +3,8 @@
 <JUCERPROJECT id="UlGaHI" name="BrocDelay" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginName="BrocDelay"
               pluginManufacturer="brettstine" pluginManufacturerCode="Bsti"
-              pluginCode="Dlay" cppLanguageStandard="20" companyName="brettstine">
+              pluginCode="Dlay" cppLanguageStandard="20" companyName="brettstine"
+              version="0.1.0">
   <MAINGROUP id="NEXKHh" name="BrocDelay">
     <GROUP id="{F5EAF8B3-3FA8-CBCB-8234-D76B792D37C6}" name="Assets">
       <FILE id="RdqqaJ" name="Lato-Medium.ttf" compile="0" resource="1" file="Source/Assets/Fonts/Lato-Medium.ttf"/>
@@ -74,7 +75,8 @@
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="BrocDelay" enablePluginBinaryCopyStep="1"
                        recommendedWarnings="LLVM"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="BrocDelay"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="BrocDelay" osxArchitecture="64BitIntel"
+                       customXcodeFlags="GCC_GENERATE_DEBUGGING_SYMBOLS=YES, DEBUG_INFORMATION_FORMAT=dwarf-with-dysm"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="../../../JUCE/modules"/>
