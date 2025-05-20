@@ -20,6 +20,8 @@ DelayAudioProcessor::DelayAudioProcessor() :
     ),
     params(apvts)
 {
+    lowCutFilter.setType(juce::dsp::StateVariableTPTFilterType::highpass);
+    highCutFilter.setType(juce::dsp::StateVariableTPTFilterType::lowpass);
 }
 
 DelayAudioProcessor::~DelayAudioProcessor()
@@ -112,6 +114,11 @@ void DelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     
     feedbackL = 0.0f;
     feedbackR = 0.0f;
+    
+    lowCutFilter.prepare(spec);
+    lowCutFilter.reset();
+    highCutFilter.prepare(spec);
+    highCutFilter.reset();
 }
 
 void DelayAudioProcessor::releaseResources()
@@ -181,13 +188,16 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
         float delayInSamples = (params.delayTime / 1000.0f) * sampleRate;
         delayLine.setDelay(delayInSamples);
         
+        lowCutFilter.setCutoffFrequency(params.lowCut);
+        highCutFilter.setCutoffFrequency(params.highCut);
+        
         float dryL = inputDataL[sample];
         float dryR = inputDataR[sample];
         
-        bool flipFlop = apvts.getRawParameterValue("flipFlop")->load() > 0.5f;
-        
-        float fbInL = flipFlop ? feedbackR : feedbackL;
-        float fbInR = flipFlop ? feedbackL : feedbackR;
+        // if flipFlop is on, invertStereo will be 1
+        // if flipFlop is off, invertStereo will be 0;
+        float fbInL = feedbackL * (1 - params.invertStereo) + feedbackR * params.invertStereo;
+        float fbInR = feedbackR * (1 - params.invertStereo) + feedbackL * params.invertStereo;
         
         //push affected signals into delay line
         //L
@@ -198,8 +208,16 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
         float wetL = delayLine.popSample(0);
         float wetR = delayLine.popSample(1);
         
+        wetL = lowCutFilter.processSample(0, wetL);
+        wetL = highCutFilter.processSample(0, wetL);
+        wetR = lowCutFilter.processSample(1, wetR);
+        wetR = highCutFilter.processSample(1, wetR);
+        
         feedbackL = wetL * params.feedback;
+        
+        
         feedbackR = wetR * params.feedback;
+        
         
         // create dry-wet gain curves for equal power across mix range
         float dryGain = std::cos (params.mix * juce::MathConstants<float>::halfPi);

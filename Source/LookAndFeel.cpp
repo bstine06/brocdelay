@@ -106,23 +106,45 @@ void SwitchLookAndFeel::drawToggleButton(juce::Graphics& g,
 {
     
     auto bounds = toggleButton.getLocalBounds().toFloat();
+    auto buttonBounds = bounds.reduced(7.0f, 7.0f);
+    
+    // draw a drop shadow
+    // Expand bounds to give room for the shadow blur
+    if (toggleButton.getToggleState()) {
+        juce::Path shadowPath;
+        shadowPath.addRoundedRectangle(bounds.reduced(5.0f, 5.0f), 15.0f);
+        dropShadow.drawForPath(g, shadowPath);
+    }
+    
+
 
     // Background fill based on toggle state
-    if (toggleButton.getToggleState())
-        g.setColour(juce::Colours::green);  // ON state
-    else
-        g.setColour(juce::Colours::darkgrey);  // OFF state
+    if (toggleButton.getToggleState()) {
+        auto gradient = juce::ColourGradient(
+                                             Colors::Switch::activeGradientTop, 0.0f, buttonBounds.getY() - 5.0f,
+                                             Colors::Switch::activeGradientBottom, 0.0f, buttonBounds.getBottom() + 5.0f, false);
+        g.setGradientFill(gradient); // ON state
+    } else {
+        auto gradient = juce::ColourGradient(
+                                             Colors::Switch::inactiveGradientTop, 0.0f, buttonBounds.getY() + 5.0f,
+                                             Colors::Switch::inactiveGradientBottom, 0.0f, buttonBounds.getBottom() - 5.0f, false);
+        g.setGradientFill(gradient); // OFF state
+    }
 
-    g.fillRoundedRectangle(bounds, 6.0f);  // Rounded corners
+    g.fillRoundedRectangle(buttonBounds, 12.0f);  // Rounded corners
 
-    // Optional border
+//    // border
     g.setColour(juce::Colours::black);
-    g.drawRoundedRectangle(bounds, 6.0f, 1.5f);
+//    g.drawRoundedRectangle(bounds, 25.0f, 1.5f);
+    
+    g.setColour(Colors::background);
+    
+    g.drawFittedText(toggleButton.getToggleState() ? "ON" : "OFF",
+                     bounds.toNearestInt(), juce::Justification::centred, 2);
 
     // Text
     g.setColour(juce::Colours::white);
     g.setFont(Fonts::getFont(16));
-    g.drawFittedText(toggleButton.getButtonText(), bounds.toNearestInt(), juce::Justification::centred, 1);
     
 }
 

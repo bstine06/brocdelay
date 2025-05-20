@@ -18,8 +18,9 @@ namespace ParamIDs
     static const juce::ParameterID delayTime { "delayTime", 1 };
     static const juce::ParameterID mix { "mix", 1 };
     static const juce::ParameterID feedback { "feedback", 1 };
-    static const juce::ParameterID inputStereo { "inputStereo", 1 };
     static const juce::ParameterID flipFlop { "flipFlop", 1 };
+    static const juce::ParameterID lowCut { "lowCut", 1 };
+    static const juce::ParameterID highCut { "highCut", 1 };
     // add more Parameter IDs here as needed
 }
 
@@ -44,11 +45,11 @@ public:
     float mix = 1.0f;
     float feedback = 0.0f;
     
-    float inputStereo = 100.0f;
     bool flipFlop = false;
+    float invertStereo = 0.0f;
     
-    float panL = 0.0f;
-    float panR = 1.0f;
+    float lowCut = 20.0f;
+    float highCut = 20000.0f;
     
 private:
     
@@ -65,10 +66,16 @@ private:
     juce::AudioParameterFloat* feedbackParam;
     juce::LinearSmoothedValue<float> feedbackSmoother;
     
-    juce::AudioParameterFloat* inputStereoParam;
-    juce::LinearSmoothedValue<float> inputStereoSmoother;
-    
     juce::AudioParameterBool* flipFlopParam;
+    juce::LinearSmoothedValue<float> invertStereoSmoother;
+    
+    juce::AudioParameterFloat* lowCutParam;
+    juce::LinearSmoothedValue<float> lowCutSmoother;
+    
+    juce::AudioParameterFloat* highCutParam;
+    juce::LinearSmoothedValue<float> highCutSmoother;
+    
+    
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Parameters)
 };

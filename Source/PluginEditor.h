@@ -37,9 +37,9 @@ private:
     RotaryKnob mixKnob { "Mix", audioProcessor.apvts, ParamIDs::mix };
     RotaryKnob delayTimeKnob { "Delay Time", audioProcessor.apvts, ParamIDs::delayTime };
     RotaryKnob feedbackKnob { "Feedback", audioProcessor.apvts, ParamIDs::feedback, true };
-    RotaryKnob inputStereoKnob { "Stereo", audioProcessor.apvts, ParamIDs::inputStereo };
     Switch flipFlopSwitch { "Flip Flop", audioProcessor.apvts, ParamIDs::flipFlop };
-    
+    RotaryKnob lowCutKnob { "Low Cut", audioProcessor.apvts, ParamIDs::lowCut };
+    RotaryKnob highCutKnob { "High Cut", audioProcessor.apvts, ParamIDs::highCut };
     
     juce::Label footerCompliment;
     FooterLookAndFeel footerLookAndFeel;

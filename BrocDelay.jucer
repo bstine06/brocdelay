@@ -4,7 +4,7 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginName="BrocDelay"
               pluginManufacturer="brettstine" pluginManufacturerCode="Bsti"
               pluginCode="Dlay" cppLanguageStandard="20" companyName="brettstine"
-              version="0.1.0">
+              version="0.2.0">
   <MAINGROUP id="NEXKHh" name="BrocDelay">
     <GROUP id="{F5EAF8B3-3FA8-CBCB-8234-D76B792D37C6}" name="Assets">
       <FILE id="RdqqaJ" name="Lato-Medium.ttf" compile="0" resource="1" file="Source/Assets/Fonts/Lato-Medium.ttf"/>

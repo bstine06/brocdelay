@@ -32,6 +32,18 @@ namespace Colors
         const juce::Colour caret { 255, 255, 255 };
     }
 
+    namespace Switch
+    {
+        const juce::Colour inactiveGradientTop { 200, 220, 200 };
+        const juce::Colour inactiveGradientBottom { 180, 200, 180 };
+//        const juce::Colour activeGradientTop { 100, 230, 100 };
+        const juce::Colour activeGradientTop {150, 220, 150};
+    //const juce::Colour activeGradientTop { 180, 200, 180 };
+    const juce::Colour activeGradientBottom { 200, 220, 200 };
+        const juce::Colour dropShadow {210, 255, 210};
+        const juce::Colour outline { 100, 160, 100 };
+    }
+
     namespace Group
     {
         const juce::Colour label { 150, 220, 150 };
@@ -99,7 +111,7 @@ public:
                           bool shouldDrawButtonAsDown) override;
     
 private:
-    juce::DropShadow dropShadow { Colors::Knob::dropShadow, 6, { 0, 3 } };
+    juce::DropShadow dropShadow { Colors::Switch::dropShadow, 8, { 0, 0 } };
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SwitchLookAndFeel)
 };
