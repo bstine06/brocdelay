@@ -4,13 +4,17 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginName="BrocDelay"
               pluginManufacturer="brettstine" pluginManufacturerCode="Bsti"
               pluginCode="Dlay" cppLanguageStandard="20" companyName="brettstine"
-              version="0.2.0">
+              version="0.2.0" pluginVST3Category="Delay" pluginAAXCategory="16">
   <MAINGROUP id="NEXKHh" name="BrocDelay">
     <GROUP id="{F5EAF8B3-3FA8-CBCB-8234-D76B792D37C6}" name="Assets">
       <FILE id="RdqqaJ" name="Lato-Medium.ttf" compile="0" resource="1" file="Source/Assets/Fonts/Lato-Medium.ttf"/>
       <FILE id="QQ9zOg" name="Logo.png" compile="0" resource="1" file="Source/Assets/Images/Logo.png"/>
     </GROUP>
     <GROUP id="{ACC5BD31-21D3-DA68-BCFD-6F619DD7DC7D}" name="Source">
+      <FILE id="oh5SfH" name="HorizontalSlider.cpp" compile="1" resource="0"
+            file="Source/HorizontalSlider.cpp"/>
+      <FILE id="ftmA4z" name="HorizontalSlider.h" compile="0" resource="0"
+            file="Source/HorizontalSlider.h"/>
       <FILE id="o6hAHx" name="Switch.cpp" compile="1" resource="0" file="Source/Switch.cpp"/>
       <FILE id="OrpnFJ" name="Switch.h" compile="0" resource="0" file="Source/Switch.h"/>
       <FILE id="nBwKpe" name="DSP.h" compile="0" resource="0" file="Source/DSP.h"/>

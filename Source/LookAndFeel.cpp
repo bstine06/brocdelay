@@ -18,6 +18,66 @@ juce::Font Fonts::getFont(float height)
         .withHeight(height);
 }
 
+//===========================================================
+//Switch
+
+SwitchLookAndFeel::SwitchLookAndFeel()
+{
+    setColour(juce::Label::textColourId, Colors::Knob::label);
+}
+
+void SwitchLookAndFeel::drawToggleButton(juce::Graphics& g,
+                                         juce::ToggleButton& toggleButton,
+                                         bool shouldDrawButtonAsHighlighted,
+                                         bool shouldDrawButtonAsDown)
+{
+    
+    auto bounds = toggleButton.getLocalBounds().toFloat();
+    auto buttonBounds = bounds.reduced(7.0f, 7.0f);
+    
+    // draw a drop shadow
+    // Expand bounds to give room for the shadow blur
+    if (toggleButton.getToggleState()) {
+        juce::Path shadowPath;
+        shadowPath.addRoundedRectangle(bounds.reduced(5.0f, 5.0f), 15.0f);
+        dropShadow.drawForPath(g, shadowPath);
+    }
+    
+
+
+    // Background fill based on toggle state
+    if (toggleButton.getToggleState()) {
+        auto gradient = juce::ColourGradient(
+                                             Colors::Switch::activeGradientTop, 0.0f, buttonBounds.getY() - 5.0f,
+                                             Colors::Switch::activeGradientBottom, 0.0f, buttonBounds.getBottom() + 5.0f, false);
+        g.setGradientFill(gradient); // ON state
+    } else {
+        auto gradient = juce::ColourGradient(
+                                             Colors::Switch::inactiveGradientTop, 0.0f, buttonBounds.getY() + 5.0f,
+                                             Colors::Switch::inactiveGradientBottom, 0.0f, buttonBounds.getBottom() - 5.0f, false);
+        g.setGradientFill(gradient); // OFF state
+    }
+
+    g.fillRoundedRectangle(buttonBounds, 12.0f);  // Rounded corners
+
+//    // border
+    g.setColour(juce::Colours::black);
+//    g.drawRoundedRectangle(bounds, 25.0f, 1.5f);
+    
+    g.setColour(Colors::background);
+    
+    g.drawFittedText(toggleButton.getToggleState() ? "ON" : "OFF",
+                     bounds.toNearestInt(), juce::Justification::centred, 2);
+
+    // Text
+    g.setColour(juce::Colours::white);
+    g.setFont(Fonts::getFont(16));
+    
+}
+
+//===========================================================
+//Rotary Knob
+
 RotaryKnobLookAndFeel::RotaryKnobLookAndFeel()
 {
     setColour(juce::Label::textColourId, Colors::Knob::label);
@@ -26,8 +86,6 @@ RotaryKnobLookAndFeel::RotaryKnobLookAndFeel()
     setColour(juce::Slider::textBoxOutlineColourId, juce::Colours::transparentBlack);
     setColour(juce::CaretComponent::caretColourId, Colors::Knob::caret);
 }
-
-
 
 void RotaryKnobLookAndFeel::drawRotarySlider(juce::Graphics &g, int x, int y, int width, [[maybe_unused]] int height, float sliderPos, float rotaryStartAngle, float rotaryEndAngle, juce::Slider &slider)
 {
@@ -94,60 +152,6 @@ void RotaryKnobLookAndFeel::drawRotarySlider(juce::Graphics &g, int x, int y, in
     }
 }
 
-SwitchLookAndFeel::SwitchLookAndFeel()
-{
-    setColour(juce::Label::textColourId, Colors::Knob::label);
-}
-
-void SwitchLookAndFeel::drawToggleButton(juce::Graphics& g,
-                                         juce::ToggleButton& toggleButton,
-                                         bool shouldDrawButtonAsHighlighted,
-                                         bool shouldDrawButtonAsDown)
-{
-    
-    auto bounds = toggleButton.getLocalBounds().toFloat();
-    auto buttonBounds = bounds.reduced(7.0f, 7.0f);
-    
-    // draw a drop shadow
-    // Expand bounds to give room for the shadow blur
-    if (toggleButton.getToggleState()) {
-        juce::Path shadowPath;
-        shadowPath.addRoundedRectangle(bounds.reduced(5.0f, 5.0f), 15.0f);
-        dropShadow.drawForPath(g, shadowPath);
-    }
-    
-
-
-    // Background fill based on toggle state
-    if (toggleButton.getToggleState()) {
-        auto gradient = juce::ColourGradient(
-                                             Colors::Switch::activeGradientTop, 0.0f, buttonBounds.getY() - 5.0f,
-                                             Colors::Switch::activeGradientBottom, 0.0f, buttonBounds.getBottom() + 5.0f, false);
-        g.setGradientFill(gradient); // ON state
-    } else {
-        auto gradient = juce::ColourGradient(
-                                             Colors::Switch::inactiveGradientTop, 0.0f, buttonBounds.getY() + 5.0f,
-                                             Colors::Switch::inactiveGradientBottom, 0.0f, buttonBounds.getBottom() - 5.0f, false);
-        g.setGradientFill(gradient); // OFF state
-    }
-
-    g.fillRoundedRectangle(buttonBounds, 12.0f);  // Rounded corners
-
-//    // border
-    g.setColour(juce::Colours::black);
-//    g.drawRoundedRectangle(bounds, 25.0f, 1.5f);
-    
-    g.setColour(Colors::background);
-    
-    g.drawFittedText(toggleButton.getToggleState() ? "ON" : "OFF",
-                     bounds.toNearestInt(), juce::Justification::centred, 2);
-
-    // Text
-    g.setColour(juce::Colours::white);
-    g.setFont(Fonts::getFont(16));
-    
-}
-
 juce::Font RotaryKnobLookAndFeel::getLabelFont([[maybe_unused]] juce::Label& label)
 {
     return Fonts::getFont();
@@ -201,6 +205,61 @@ juce::Label* RotaryKnobLookAndFeel::createSliderTextBox(juce::Slider& slider)
     return l;
 }
 
+//===========================================================
+//Horizontal Slider
+
+HorizontalSliderLookAndFeel::HorizontalSliderLookAndFeel()
+{
+    setColour(juce::Label::textColourId, Colors::Knob::label);
+}
+
+void HorizontalSliderLookAndFeel::drawLinearSlider(juce::Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, juce::Slider::SliderStyle sliderStyle, juce::Slider& slider)
+{
+    // Draw knob
+    float knobRadius = 10.0f;
+    
+    // Draw track
+    auto trackHeight = knobRadius*2.0f;
+    auto trackY = y + height / 2.0f - trackHeight / 2.0f;
+    g.setColour(Colors::Knob::trackBackground);
+    g.fillRoundedRectangle((float)x - knobRadius, trackY, (float)width + knobRadius*2.0f, trackHeight, 4.0f);
+    
+    float knobX = sliderPos - knobRadius;
+    float knobY = y + height / 2.0f - knobRadius;
+    g.setColour(juce::Colours::white);
+    g.fillRoundedRectangle(knobX, knobY, knobRadius * 2.0f, knobRadius * 2.0f, 4.0f);
+
+       
+}
+
+void HorizontalSliderLookAndFeel::drawLabel(juce::Graphics& g, juce::Label& label)
+{
+    g.setColour(label.findColour(juce::Label::textColourId));
+    g.setFont(getLabelFont(label));
+    g.drawFittedText(label.getText(), label.getLocalBounds(), label.getJustificationType(), 1);
+}
+
+juce::Font HorizontalSliderLookAndFeel::getLabelFont([[maybe_unused]] juce::Label& label)
+{
+    return Fonts::getFont();
+}
+
+class HorizontalSliderLabel : public juce::Label
+{
+public:
+    HorizontalSliderLabel() : juce::Label() {}
+    
+    void mouseWheelMove(const juce::MouseEvent&, const juce::MouseWheelDetails&) override {}
+    
+    std::unique_ptr<juce::AccessibilityHandler> createAccessibilityHandler() override
+    {
+        return createIgnoredAccessibilityHandler(*this);
+    }
+};
+
+//===========================================================
+//Main
+
 MainLookAndFeel::MainLookAndFeel()
 {
     setColour(juce::GroupComponent::textColourId, Colors::Group::label);
@@ -211,6 +270,9 @@ juce::Font MainLookAndFeel::getLabelFont([[maybe_unused]] juce::Label& label)
 {
     return Fonts::getFont();
 }
+
+//===========================================================
+//Footer
 
 FooterLookAndFeel::FooterLookAndFeel()
 {

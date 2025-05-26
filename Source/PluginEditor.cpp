@@ -17,6 +17,12 @@ DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
     delayGroup.setText("Delay");
     delayGroup.setTextLabelPosition(juce::Justification::horizontallyCentred);
     delayGroup.addAndMakeVisible(delayTimeKnob);
+    
+    shiftModesGroup.setText("Shift Modes");
+    shiftModesGroup.setTextLabelPosition(juce::Justification::horizontallyCentred);
+    shiftModesGroup.addAndMakeVisible(accelerateModeKnob);
+    shiftModesGroup.addAndMakeVisible(decelerateModeKnob);
+    delayGroup.addAndMakeVisible(shiftModesGroup);
     addAndMakeVisible(delayGroup);
     
     feedbackGroup.setText("Feedback");
@@ -93,6 +99,10 @@ void DelayAudioProcessorEditor::resized()
     footerGroup.setBounds(delayGroup.getX(), delayGroup.getBottom(), bounds.getWidth() - 20, 70);
     
     delayTimeKnob.setTopLeftPosition(20, 20);
+    
+    shiftModesGroup.setBounds(0, delayTimeKnob.getBottom() + 30, 110, row1Height - delayTimeKnob.getBottom() - 30 );
+    accelerateModeKnob.setTopLeftPosition(20, 14);
+    decelerateModeKnob.setTopLeftPosition(accelerateModeKnob.getX(), accelerateModeKnob.getBottom() + 4);
 
     feedbackKnob.setTopLeftPosition(20, 20);
     flipFlopSwitch.setTopLeftPosition(feedbackKnob.getRight() + 20, feedbackKnob.getY());

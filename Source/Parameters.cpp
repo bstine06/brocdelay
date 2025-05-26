@@ -19,6 +19,12 @@ template<typename T> static void castParameter(juce::AudioProcessorValueTreeStat
     jassert(destination); // parameter does not exist or wrong type
 }
 
+const juce::StringArray delayModeNames = {
+    "Repitch",
+    "Fade",
+    "Jump"
+};
+
 static juce::String stringFromMilliseconds(float value, int)
 {
     if (value < 10.0f) {
@@ -73,6 +79,17 @@ static float hzFromString(const juce::String& text) {
     return value;
 }
 
+static int delayModeToIndex(DelayMode mode)
+{
+    return static_cast<int>(mode);
+}
+
+static DelayMode indexToDelayMode(int index)
+{
+    index = std::clamp(index, 0, static_cast<int>(delayModeNames.size() - 1));
+    return static_cast<DelayMode>(index);
+}
+
 // Constructor
 Parameters::Parameters(juce::AudioProcessorValueTreeState& apvts)
 {
@@ -83,6 +100,8 @@ Parameters::Parameters(juce::AudioProcessorValueTreeState& apvts)
     castParameter(apvts, ParamIDs::flipFlop, flipFlopParam);
     castParameter(apvts, ParamIDs::lowCut, lowCutParam);
     castParameter(apvts, ParamIDs::highCut, highCutParam);
+    castParameter<juce::AudioParameterChoice*>(apvts, ParamIDs::accelerateMode, accelerateModeParam);
+    castParameter<juce::AudioParameterChoice*>(apvts, ParamIDs::decelerateMode, decelerateModeParam);
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout() {
@@ -163,6 +182,22 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterL
                      .withValueFromStringFunction(hzFromString)
                ));
     
+    layout.add(std::make_unique<juce::AudioParameterChoice>(
+                ParamIDs::accelerateMode,
+                "Accelerate Mode",
+                delayModeNames,
+                delayModeToIndex(DelayMode::Repitch),
+                ""
+                ));
+    
+    layout.add(std::make_unique<juce::AudioParameterChoice>(
+                ParamIDs::decelerateMode,
+                "Decelerate Mode",
+                delayModeNames,
+                delayModeToIndex(DelayMode::Repitch),
+                ""
+                ));
+    
     return layout;
 }
 
@@ -203,6 +238,9 @@ void Parameters::reset() noexcept
     
     highCut = 0.0f;
     highCutSmoother.setCurrentAndTargetValue(highCutParam->get());
+    
+    accelerateMode = DelayMode::Repitch;
+    decelerateMode = DelayMode::Repitch;
 }
 
 void Parameters::update() noexcept
@@ -213,6 +251,9 @@ void Parameters::update() noexcept
     if (delayTime == 0.0f) {
         delayTime = targetDelayTime;
     }
+    
+    accelerateMode = indexToDelayMode(accelerateModeParam->getIndex());
+    decelerateMode = indexToDelayMode(decelerateModeParam->getIndex());
     
     mixSmoother.setTargetValue(mixParam->get() * 0.01f);
     

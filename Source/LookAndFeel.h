@@ -116,6 +116,29 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SwitchLookAndFeel)
 };
 
+class HorizontalSliderLookAndFeel : public juce::LookAndFeel_V4
+{
+public:
+    HorizontalSliderLookAndFeel();
+    
+    static HorizontalSliderLookAndFeel* get()
+    {
+        static HorizontalSliderLookAndFeel instance;
+        return &instance;
+    }
+    
+    void drawLabel(juce::Graphics& g, juce::Label& label);
+    
+    void drawLinearSlider(juce::Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, juce::Slider::SliderStyle sliderStyle, juce::Slider& slider) override;
+    
+    juce::Font getLabelFont(juce::Label&) override;
+    
+private:
+    juce::DropShadow dropShadow { Colors::Knob::dropShadow, 6, { 0, 3 } };
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HorizontalSliderLookAndFeel)
+};
+
 class FooterLookAndFeel : public juce::LookAndFeel_V4
 {
 public:

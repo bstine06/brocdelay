@@ -12,6 +12,7 @@
 #include "PluginProcessor.h"
 #include "Parameters.h"
 #include "RotaryKnob.h"
+#include "HorizontalSlider.h"
 #include "Switch.h"
 #include "LookAndFeel.h"
 
@@ -41,12 +42,15 @@ private:
     RotaryKnob lowCutKnob { "Low Cut", audioProcessor.apvts, ParamIDs::lowCut };
     RotaryKnob highCutKnob { "High Cut", audioProcessor.apvts, ParamIDs::highCut };
     
+    HorizontalSlider accelerateModeKnob { "Accelerate", audioProcessor.apvts, ParamIDs::accelerateMode };
+    HorizontalSlider decelerateModeKnob { "Decelerate", audioProcessor.apvts, ParamIDs::decelerateMode };
+    
     juce::Label footerCompliment;
     FooterLookAndFeel footerLookAndFeel;
     
     MainLookAndFeel mainLookAndFeel;
     
-    juce::GroupComponent delayGroup, feedbackGroup, outputGroup, footerGroup;
+    juce::GroupComponent delayGroup, shiftModesGroup, feedbackGroup, outputGroup, footerGroup;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DelayAudioProcessorEditor)
 };

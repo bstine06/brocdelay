@@ -16,6 +16,8 @@ namespace ParamIDs
 {
     static const juce::ParameterID gain { "gain", 1 };
     static const juce::ParameterID delayTime { "delayTime", 1 };
+    static const juce::ParameterID accelerateMode { "accelerateMode", 1 };
+    static const juce::ParameterID decelerateMode { "decelerateMode", 1 };
     static const juce::ParameterID mix { "mix", 1 };
     static const juce::ParameterID feedback { "feedback", 1 };
     static const juce::ParameterID flipFlop { "flipFlop", 1 };
@@ -23,6 +25,15 @@ namespace ParamIDs
     static const juce::ParameterID highCut { "highCut", 1 };
     // add more Parameter IDs here as needed
 }
+
+enum class DelayMode
+{
+    Repitch,
+    Fade,
+    Jump
+};
+
+extern const juce::StringArray delayModeNames;
 
 class Parameters
 {
@@ -51,6 +62,9 @@ public:
     float lowCut = 20.0f;
     float highCut = 20000.0f;
     
+    DelayMode accelerateMode = DelayMode::Repitch;
+    DelayMode decelerateMode = DelayMode::Repitch;
+    
 private:
     
     juce::AudioParameterFloat* gainParam;
@@ -59,6 +73,9 @@ private:
     juce::AudioParameterFloat* delayTimeParam;
     float targetDelayTime = 0.0f;
     float coeff = 0.0f;
+    
+    juce::AudioParameterChoice* accelerateModeParam;
+    juce::AudioParameterChoice* decelerateModeParam;
     
     juce::AudioParameterFloat* mixParam;
     juce::LinearSmoothedValue<float> mixSmoother;
