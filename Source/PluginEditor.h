@@ -39,14 +39,14 @@ private:
     RotaryKnob delayTimeKnob { "Delay Time", audioProcessor.apvts, ParamIDs::delayTime };
     RotaryKnob delayNoteKnob { "Delay Note", audioProcessor.apvts, ParamIDs::delayNote };
     RotaryKnob feedbackKnob { "Feedback", audioProcessor.apvts, ParamIDs::feedback, true };
-    Switch flipFlopSwitch { "Flip Flop", audioProcessor.apvts, ParamIDs::flipFlop, true };
+    Switch flipFlopSwitch { "Flip Flop", audioProcessor.apvts, ParamIDs::flipFlop };
     RotaryKnob lowCutKnob { "Low Cut", audioProcessor.apvts, ParamIDs::lowCut };
     RotaryKnob highCutKnob { "High Cut", audioProcessor.apvts, ParamIDs::highCut };
     
     HorizontalSlider accelerateModeKnob { "Accelerate", audioProcessor.apvts, ParamIDs::accelerateMode };
     HorizontalSlider decelerateModeKnob { "Decelerate", audioProcessor.apvts, ParamIDs::decelerateMode };
     
-    Switch tempoSyncSwitch { "Tempo Sync", audioProcessor.apvts, ParamIDs::tempoSync, true };
+    Switch tempoSyncSwitch { "Tempo Sync", audioProcessor.apvts, ParamIDs::tempoSync };
     
     juce::Label footerCompliment;
     FooterLookAndFeel footerLookAndFeel;
