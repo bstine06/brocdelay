@@ -127,7 +127,7 @@ public:
         return &instance;
     }
     
-    void drawLabel(juce::Graphics& g, juce::Label& label);
+    void drawLabel(juce::Graphics& g, juce::Label& label) override;
     
     void drawLinearSlider(juce::Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, juce::Slider::SliderStyle sliderStyle, juce::Slider& slider) override;
     

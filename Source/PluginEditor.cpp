@@ -17,7 +17,8 @@ DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
     delayGroup.setText("Delay");
     delayGroup.setTextLabelPosition(juce::Justification::horizontallyCentred);
     delayGroup.addAndMakeVisible(delayTimeKnob);
-    
+    delayGroup.addAndMakeVisible(delayNoteKnob);
+    delayGroup.addAndMakeVisible(tempoSyncSwitch);
     shiftModesGroup.setText("Shift Modes");
     shiftModesGroup.setTextLabelPosition(juce::Justification::horizontallyCentred);
     shiftModesGroup.addAndMakeVisible(accelerateModeKnob);
@@ -32,6 +33,8 @@ DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
     feedbackGroup.addAndMakeVisible(lowCutKnob);
     feedbackGroup.addAndMakeVisible(highCutKnob);
     addAndMakeVisible(feedbackGroup);
+    
+    
     
     outputGroup.setText("Output");
     outputGroup.setTextLabelPosition(juce::Justification::horizontallyCentred);
@@ -50,7 +53,7 @@ DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
     
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (500, 440);
+    setSize (610, 430);
 }
 
 DelayAudioProcessorEditor::~DelayAudioProcessorEditor()
@@ -85,32 +88,32 @@ void DelayAudioProcessorEditor::resized()
     
     int y = 50;
     int height = bounds.getHeight();
-    int row1Height = height - 130;
+    int row1Height = 280;
     
     // Position the groups
-    delayGroup.setBounds(10, y, 110, row1Height);
+    delayGroup.setBounds(10, y, 210, row1Height);
     
     outputGroup.setBounds(bounds.getWidth() - 160, y, 150, row1Height);
     
     feedbackGroup.setBounds(delayGroup.getRight() + 10, y, outputGroup.getX() - delayGroup.getRight() - 20, row1Height);
     
-    
-    
-    footerGroup.setBounds(delayGroup.getX(), delayGroup.getBottom(), bounds.getWidth() - 20, 70);
+    footerGroup.setBounds(shiftModesGroup.getWidth() + 10, delayGroup.getBottom(), bounds.getWidth() - 20, 90);
     
     delayTimeKnob.setTopLeftPosition(20, 20);
-    
-    shiftModesGroup.setBounds(0, delayTimeKnob.getBottom() + 30, 110, row1Height - delayTimeKnob.getBottom() - 30 );
-    accelerateModeKnob.setTopLeftPosition(20, 14);
-    decelerateModeKnob.setTopLeftPosition(accelerateModeKnob.getX(), accelerateModeKnob.getBottom() + 4);
+    tempoSyncSwitch.setTopLeftPosition(delayTimeKnob.getRight() + 30, delayTimeKnob.getY());
+    delayNoteKnob.setTopLeftPosition(delayTimeKnob.getX(), delayTimeKnob.getBottom() + 20);
+    shiftModesGroup.setBounds(tempoSyncSwitch.getX()-20, tempoSyncSwitch.getBottom()-15, delayGroup.getWidth() - delayTimeKnob.getWidth() - 30, row1Height - tempoSyncSwitch.getHeight()-5);
+
+    accelerateModeKnob.setTopLeftPosition(20, 20);
+    decelerateModeKnob.setTopLeftPosition(accelerateModeKnob.getX(), accelerateModeKnob.getBottom()+5);
 
     feedbackKnob.setTopLeftPosition(20, 20);
-    flipFlopSwitch.setTopLeftPosition(feedbackKnob.getRight() + 20, feedbackKnob.getY());
-    lowCutKnob.setTopLeftPosition(feedbackKnob.getX(), feedbackKnob.getBottom() + 10);
-    highCutKnob.setTopLeftPosition(lowCutKnob.getRight() + 20, lowCutKnob.getY());
+    flipFlopSwitch.setTopLeftPosition(feedbackKnob.getRight() + 30, feedbackKnob.getY());
+    lowCutKnob.setTopLeftPosition(feedbackKnob.getX(), feedbackKnob.getBottom() + 20);
+    highCutKnob.setTopLeftPosition(lowCutKnob.getRight() + 30, lowCutKnob.getY());
     
     mixKnob.setTopLeftPosition(20, 20);
-    gainKnob.setTopLeftPosition(mixKnob.getX(), mixKnob.getBottom() + 10);
+    gainKnob.setTopLeftPosition(mixKnob.getX(), mixKnob.getBottom() + 20);
     
     
     footerCompliment.setBounds(footerGroup.getLocalBounds().reduced(10));

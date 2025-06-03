@@ -119,6 +119,18 @@ void DelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     lowCutFilter.reset();
     highCutFilter.prepare(spec);
     highCutFilter.reset();
+    
+    lastLowCut = -1.0f;
+    lastHighCut = -1.0f;
+    
+    lastMix = -1.0f;
+    dryGain = 1.0f;
+    wetGain = 0.0f;
+    
+    delayInSamples = 0.0f;
+    targetDelay = 0.0f;
+    xfade = 0.0f;
+    xfadeInc = static_cast<float>(1.0 / 0.05 * sampleRate); //50ms
 }
 
 void DelayAudioProcessor::releaseResources()
@@ -185,10 +197,28 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample) {
         
         params.smoothen();
-        float delayInSamples = (params.delayTime / 1000.0f) * sampleRate;
+        delayInSamples = (params.delayTime / 1000.0f) * sampleRate;
         delayLine.setDelay(delayInSamples);
         
-        lowCutFilter.setCutoffFrequency(params.lowCut);
+        if (params.lowCut != lastLowCut) {
+            lowCutFilter.setCutoffFrequency(params.lowCut);
+            lastLowCut = params.lowCut;
+        }
+        
+        if (params.highCut != lastHighCut) {
+            highCutFilter.setCutoffFrequency(params.highCut);
+            lastHighCut = params.highCut;
+        }
+        
+        float currentMix = params.mix;
+        if (std::abs(currentMix - lastMix) > 0.001f) // small tolerance to avoid floating point jitter
+        {
+            // blend with sinusoids for equal power mixing
+            dryGain = std::cos(currentMix * juce::MathConstants<float>::halfPi);
+            wetGain = std::sin(currentMix * juce::MathConstants<float>::halfPi);
+            lastMix = currentMix;
+        }
+        
         highCutFilter.setCutoffFrequency(params.highCut);
         
         float dryL = inputDataL[sample];
@@ -214,14 +244,7 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
         wetR = highCutFilter.processSample(1, wetR);
         
         feedbackL = wetL * params.feedback;
-        
-        
         feedbackR = wetR * params.feedback;
-        
-        
-        // create dry-wet gain curves for equal power across mix range
-        float dryGain = std::cos (params.mix * juce::MathConstants<float>::halfPi);
-        float wetGain = std::sin (params.mix * juce::MathConstants<float>::halfPi);
 
         float mixL = (dryL * dryGain) + (wetL * wetGain * params.mix);
         float mixR = (dryR * dryGain) + (wetR * wetGain * params.mix);

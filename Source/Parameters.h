@@ -23,17 +23,10 @@ namespace ParamIDs
     static const juce::ParameterID flipFlop { "flipFlop", 1 };
     static const juce::ParameterID lowCut { "lowCut", 1 };
     static const juce::ParameterID highCut { "highCut", 1 };
+    static const juce::ParameterID tempoSync { "tempoSync", 1 };
+    static const juce::ParameterID delayNote { "delayNote", 1};
     // add more Parameter IDs here as needed
 }
-
-enum class DelayMode
-{
-    Repitch,
-    Fade,
-    Jump
-};
-
-extern const juce::StringArray delayModeNames;
 
 class Parameters
 {
@@ -62,8 +55,11 @@ public:
     float lowCut = 20.0f;
     float highCut = 20000.0f;
     
-    DelayMode accelerateMode = DelayMode::Repitch;
-    DelayMode decelerateMode = DelayMode::Repitch;
+    int accelerateMode = 0;
+    int decelerateMode = 0;
+    
+    int delayNote = 0;
+    bool tempoSync = false;
     
 private:
     
@@ -91,6 +87,9 @@ private:
     
     juce::AudioParameterFloat* highCutParam;
     juce::LinearSmoothedValue<float> highCutSmoother;
+    
+    juce::AudioParameterBool* tempoSyncParam;
+    juce::AudioParameterChoice* delayNoteParam;
     
     
     

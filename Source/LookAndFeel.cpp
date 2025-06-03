@@ -33,7 +33,9 @@ void SwitchLookAndFeel::drawToggleButton(juce::Graphics& g,
 {
     
     auto bounds = toggleButton.getLocalBounds().toFloat();
-    auto buttonBounds = bounds.reduced(7.0f, 7.0f);
+    
+    float boundReduction = 7.0f;
+    auto buttonBounds = bounds.reduced(boundReduction, boundReduction);
     
     // draw a drop shadow
     // Expand bounds to give room for the shadow blur

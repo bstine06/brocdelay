@@ -20,6 +20,7 @@ attachment(apvts, parameterID.getParamID(), toggleButton) {
     
     toggleButton.setButtonText(text);
     toggleButton.setBounds(0,0,70,70);
+    toggleButton.setClickingTogglesState(true);
     addAndMakeVisible(toggleButton);
     
     label.setText(text, juce::NotificationType::dontSendNotification);
