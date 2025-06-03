@@ -17,7 +17,7 @@ DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
     delayGroup.setText("Delay");
     delayGroup.setTextLabelPosition(juce::Justification::horizontallyCentred);
     delayGroup.addAndMakeVisible(delayTimeKnob);
-    delayGroup.addAndMakeVisible(delayNoteKnob);
+    delayGroup.addChildComponent(delayNoteKnob);
     delayGroup.addAndMakeVisible(tempoSyncSwitch);
     shiftModesGroup.setText("Shift Modes");
     shiftModesGroup.setTextLabelPosition(juce::Justification::horizontallyCentred);
@@ -53,13 +53,18 @@ DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
     
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (610, 430);
+    setSize (590, 420);
+    
+    updateDelayKnobs(audioProcessor.params.tempoSyncParam->get());
+    audioProcessor.params.tempoSyncParam->addListener(this);
 }
 
 DelayAudioProcessorEditor::~DelayAudioProcessorEditor()
 {
     setLookAndFeel(nullptr);
     footerCompliment.setLookAndFeel(nullptr);
+    
+    audioProcessor.params.tempoSyncParam->removeListener(this);
 }
 
 //==============================================================================
@@ -88,10 +93,10 @@ void DelayAudioProcessorEditor::resized()
     
     int y = 50;
     int height = bounds.getHeight();
-    int row1Height = 280;
+    int row1Height = 270;
     
     // Position the groups
-    delayGroup.setBounds(10, y, 210, row1Height);
+    delayGroup.setBounds(10, y, 200, row1Height);
     
     outputGroup.setBounds(bounds.getWidth() - 160, y, 150, row1Height);
     
@@ -100,24 +105,43 @@ void DelayAudioProcessorEditor::resized()
     footerGroup.setBounds(shiftModesGroup.getWidth() + 10, delayGroup.getBottom(), bounds.getWidth() - 20, 90);
     
     delayTimeKnob.setTopLeftPosition(20, 20);
-    tempoSyncSwitch.setTopLeftPosition(delayTimeKnob.getRight() + 30, delayTimeKnob.getY());
-    delayNoteKnob.setTopLeftPosition(delayTimeKnob.getX(), delayTimeKnob.getBottom() + 20);
-    shiftModesGroup.setBounds(tempoSyncSwitch.getX()-20, tempoSyncSwitch.getBottom()-15, delayGroup.getWidth() - delayTimeKnob.getWidth() - 30, row1Height - tempoSyncSwitch.getHeight()-5);
+    tempoSyncSwitch.setTopLeftPosition(delayTimeKnob.getRight() + 20, delayTimeKnob.getY());
+    delayNoteKnob.setTopLeftPosition(delayTimeKnob.getX(), delayTimeKnob.getY());
+    shiftModesGroup.setBounds(0, delayTimeKnob.getBottom() + 20, delayGroup.getWidth(), row1Height - delayNoteKnob.getBottom()-20);
 
-    accelerateModeKnob.setTopLeftPosition(20, 20);
-    decelerateModeKnob.setTopLeftPosition(accelerateModeKnob.getX(), accelerateModeKnob.getBottom()+5);
+    accelerateModeKnob.setTopLeftPosition(20, 30);
+    decelerateModeKnob.setTopRightPosition(shiftModesGroup.getWidth() - 20, 30);
 
     feedbackKnob.setTopLeftPosition(20, 20);
-    flipFlopSwitch.setTopLeftPosition(feedbackKnob.getRight() + 30, feedbackKnob.getY());
-    lowCutKnob.setTopLeftPosition(feedbackKnob.getX(), feedbackKnob.getBottom() + 20);
-    highCutKnob.setTopLeftPosition(lowCutKnob.getRight() + 30, lowCutKnob.getY());
+    flipFlopSwitch.setTopLeftPosition(feedbackKnob.getRight() + 20, feedbackKnob.getY());
+    lowCutKnob.setTopLeftPosition(feedbackKnob.getX(), feedbackKnob.getBottom() + 10);
+    highCutKnob.setTopLeftPosition(lowCutKnob.getRight() + 20, lowCutKnob.getY());
     
     mixKnob.setTopLeftPosition(20, 20);
-    gainKnob.setTopLeftPosition(mixKnob.getX(), mixKnob.getBottom() + 20);
+    gainKnob.setTopLeftPosition(mixKnob.getX(), mixKnob.getBottom() + 10);
     
     
     footerCompliment.setBounds(footerGroup.getLocalBounds().reduced(10));
 
     
     
+}
+
+void DelayAudioProcessorEditor::parameterValueChanged(int, float value)
+{
+    DBG("parameter changed: " << value);
+    if (juce::MessageManager::getInstance()->isThisTheMessageThread()) {
+        updateDelayKnobs(value != 0.0f);
+    } else {
+        juce::MessageManager::callAsync([this, value]
+        {
+            updateDelayKnobs(value != 0.0f);
+        });
+    }
+}
+
+void DelayAudioProcessorEditor::updateDelayKnobs(bool tempoSyncActive)
+{
+    delayTimeKnob.setVisible(!tempoSyncActive);
+    delayNoteKnob.setVisible(tempoSyncActive);
 }

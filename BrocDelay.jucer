@@ -11,6 +11,8 @@
       <FILE id="QQ9zOg" name="Logo.png" compile="0" resource="1" file="Source/Assets/Images/Logo.png"/>
     </GROUP>
     <GROUP id="{ACC5BD31-21D3-DA68-BCFD-6F619DD7DC7D}" name="Source">
+      <FILE id="Pt7pDC" name="Tempo.cpp" compile="1" resource="0" file="Source/Tempo.cpp"/>
+      <FILE id="nEhyG5" name="Tempo.h" compile="0" resource="0" file="Source/Tempo.h"/>
       <FILE id="oh5SfH" name="HorizontalSlider.cpp" compile="1" resource="0"
             file="Source/HorizontalSlider.cpp"/>
       <FILE id="ftmA4z" name="HorizontalSlider.h" compile="0" resource="0"
