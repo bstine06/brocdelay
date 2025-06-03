@@ -46,7 +46,7 @@ public:
     
     float gain = 0.0f;
     float delayTime = 1.0f;
-    float mix = 1.0f;
+    float mix = 0.5f;
     float feedback = 0.0f;
     
     bool flipFlop = false;
@@ -58,7 +58,7 @@ public:
     int accelerateMode = 0;
     int decelerateMode = 0;
     
-    int delayNote = 0;
+    int delayNote = 9;
     bool tempoSync = false;
     
     juce::AudioParameterBool* tempoSyncParam;

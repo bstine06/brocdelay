@@ -127,7 +127,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterL
                //min, max, step interval, skew
                juce::NormalisableRange<float> { 0.0f, 100.0f, 1.0f },
                //default value
-               100.0f,
+               50.0f,
                //set value string display
                juce::AudioParameterFloatAttributes().withStringFromValueFunction(stringFromPercent)));
     
@@ -243,8 +243,9 @@ void Parameters::reset() noexcept
     gainSmoother.setCurrentAndTargetValue(juce::Decibels::decibelsToGain(gainParam->get()));
     
     delayTime = 0.0f;
+    delayNote = 9;
     
-    mix = 1.0f;
+    mix = 50.0f;
     mixSmoother.setCurrentAndTargetValue(mixParam->get() * 0.01f);
     
     feedback = 0.0f;
