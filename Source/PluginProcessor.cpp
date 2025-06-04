@@ -238,11 +238,14 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
         float fbInL = feedbackL * (1 - params.invertStereo) + feedbackR * params.invertStereo;
         float fbInR = feedbackR * (1 - params.invertStereo) + feedbackL * params.invertStereo;
         
+        float dryInL = dryL * (1 - params.invertStereo) + dryR * params.invertStereo;
+        float dryInR = dryR * (1 - params.invertStereo) + dryL * params.invertStereo;
+        
         //push affected signals into delay line
         //L
-        delayLine.pushSample(0, dryL + fbInL);
+        delayLine.pushSample(0, dryInL + fbInL);
         //R
-        delayLine.pushSample(1, dryR + fbInR);
+        delayLine.pushSample(1, dryInR + fbInR);
         
         float wetL = delayLine.popSample(0);
         float wetR = delayLine.popSample(1);
