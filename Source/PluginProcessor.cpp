@@ -105,12 +105,13 @@ void DelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     spec.sampleRate = sampleRate;
     spec.maximumBlockSize = juce::uint32(samplesPerBlock);
     spec.numChannels = 2;
-    delayLine.prepare(spec);
     
     double numSamples = Parameters::maxDelayTime / 1000.0 * sampleRate;
     int maxDelayInSamples = int(std::ceil(numSamples));
-    delayLine.setMaximumDelayInSamples(maxDelayInSamples);
-    delayLine.reset();
+    delayLineL.setMaximumDelayInSamples(maxDelayInSamples);
+    delayLineR.setMaximumDelayInSamples(maxDelayInSamples);
+    delayLineL.reset();
+    delayLineR.reset();
     
     feedbackL = 0.0f;
     feedbackR = 0.0f;
@@ -207,7 +208,6 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
         params.smoothen();
         float delayTime = params.tempoSync ? syncedTime : params.delayTime;
         delayInSamples = (delayTime / 1000.0f) * sampleRate;
-        delayLine.setDelay(delayInSamples);
         
         if (params.lowCut != lastLowCut) {
             lowCutFilter.setCutoffFrequency(params.lowCut);
@@ -243,12 +243,12 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
         
         //push affected signals into delay line
         //L
-        delayLine.pushSample(0, dryInL + fbInL);
+        delayLineL.write(dryInL + fbInL);
         //R
-        delayLine.pushSample(1, dryInR + fbInR);
+        delayLineR.write(dryInR + fbInR);
         
-        float wetL = delayLine.popSample(0);
-        float wetR = delayLine.popSample(1);
+        float wetL = delayLineL.read(delayInSamples);
+        float wetR = delayLineR.read(delayInSamples);
         
         wetL = lowCutFilter.processSample(0, wetL);
         wetL = highCutFilter.processSample(0, wetL);
