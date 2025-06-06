@@ -11,7 +11,7 @@
 
 //==============================================================================
 DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+: AudioProcessorEditor (&p), audioProcessor (p), meter(p.levelL, p.levelR)
 {
     
     delayGroup.setText("Delay");
@@ -40,6 +40,7 @@ DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
     outputGroup.setTextLabelPosition(juce::Justification::horizontallyCentred);
     outputGroup.addAndMakeVisible(gainKnob);
     outputGroup.addAndMakeVisible(mixKnob);
+    outputGroup.addAndMakeVisible(meter);
     addAndMakeVisible(outputGroup);
     
     footerCompliment.setText("you're doing a good job!!", juce::dontSendNotification);
@@ -92,7 +93,6 @@ void DelayAudioProcessorEditor::resized()
     auto bounds = getLocalBounds();
     
     int y = 50;
-    int height = bounds.getHeight();
     int row1Height = 270;
     
     // Position the groups
@@ -119,6 +119,7 @@ void DelayAudioProcessorEditor::resized()
     
     mixKnob.setTopLeftPosition(20, 20);
     gainKnob.setTopLeftPosition(mixKnob.getX(), mixKnob.getBottom() + 10);
+    meter.setBounds(outputGroup.getWidth() - 45, 30, 30, gainKnob.getBottom() - 30);
     
     
     footerCompliment.setBounds(footerGroup.getLocalBounds().reduced(10));

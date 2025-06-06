@@ -36,12 +36,19 @@ namespace Colors
     {
         const juce::Colour inactiveGradientTop { 200, 220, 200 };
         const juce::Colour inactiveGradientBottom { 180, 200, 180 };
-//        const juce::Colour activeGradientTop { 100, 230, 100 };
         const juce::Colour activeGradientTop {150, 220, 150};
-    //const juce::Colour activeGradientTop { 180, 200, 180 };
-    const juce::Colour activeGradientBottom { 200, 220, 200 };
+        const juce::Colour activeGradientBottom { 200, 220, 200 };
         const juce::Colour dropShadow {210, 255, 210};
         const juce::Colour outline { 100, 160, 100 };
+    }
+
+    namespace LevelMeter
+    {
+    const juce::Colour background { 0, 60, 0 };
+        const juce::Colour tickLine { 100, 160, 100 };
+        const juce::Colour tickLabel { 240, 240, 240 };
+        const juce::Colour tooLoud { 226, 74, 81 };
+        const juce::Colour levelOK { 65, 206, 88 };
     }
 
     namespace Group

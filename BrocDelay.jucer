@@ -11,6 +11,8 @@
       <FILE id="QQ9zOg" name="Logo.png" compile="0" resource="1" file="Source/Assets/Images/Logo.png"/>
     </GROUP>
     <GROUP id="{ACC5BD31-21D3-DA68-BCFD-6F619DD7DC7D}" name="Source">
+      <FILE id="G52mDV" name="LevelMeter.cpp" compile="1" resource="0" file="Source/LevelMeter.cpp"/>
+      <FILE id="VGwbjI" name="LevelMeter.h" compile="0" resource="0" file="Source/LevelMeter.h"/>
       <FILE id="lk9JZR" name="DelayLine.cpp" compile="1" resource="0" file="Source/DelayLine.cpp"/>
       <FILE id="ugFYp4" name="DelayLine.h" compile="0" resource="0" file="Source/DelayLine.h"/>
       <FILE id="Pt7pDC" name="Tempo.cpp" compile="1" resource="0" file="Source/Tempo.cpp"/>

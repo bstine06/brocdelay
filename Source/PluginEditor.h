@@ -15,6 +15,7 @@
 #include "HorizontalSlider.h"
 #include "Switch.h"
 #include "LookAndFeel.h"
+#include "LevelMeter.h"
 
 //==============================================================================
 /**
@@ -53,6 +54,8 @@ private:
     HorizontalSlider decelerateModeKnob { "Decelerate", audioProcessor.apvts, ParamIDs::decelerateMode };
     
     Switch tempoSyncSwitch { "Tempo Sync", audioProcessor.apvts, ParamIDs::tempoSync };
+    
+    LevelMeter meter;
     
     juce::Label footerCompliment;
     FooterLookAndFeel footerLookAndFeel;

@@ -62,6 +62,8 @@ public:
     };
     
     Parameters params;
+    
+    std::atomic<float> levelL, levelR;
 
 private:
     //==============================================================================
