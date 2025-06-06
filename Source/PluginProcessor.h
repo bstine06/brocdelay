@@ -12,6 +12,7 @@
 #include "Parameters.h"
 #include "Tempo.h"
 #include "DelayLine.h"
+#include "Measurement.h"
 
 //==============================================================================
 /**
@@ -63,7 +64,7 @@ public:
     
     Parameters params;
     
-    std::atomic<float> levelL, levelR;
+    Measurement levelL, levelR;
 
 private:
     //==============================================================================

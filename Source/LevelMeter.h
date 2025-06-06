@@ -11,6 +11,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "Measurement.h"
 
 //==============================================================================
 /*
@@ -18,8 +19,8 @@
 class LevelMeter  : public juce::Component, private juce::Timer
 {
 public:
-    LevelMeter(std::atomic<float>& measurementL,
-               std::atomic<float>& measurementR);
+    LevelMeter(Measurement& measurementL,
+               Measurement& measurementR);
     ~LevelMeter() override;
 
     void paint (juce::Graphics&) override;
@@ -28,8 +29,8 @@ public:
 private:
     void timerCallback() override;
     
-    std::atomic<float>& measurementL;
-    std::atomic<float>& measurementR;
+    Measurement& measurementL;
+    Measurement& measurementR;
     
     static constexpr float maxdB = 6.0f;
     static constexpr float mindB = -60.0f;
@@ -44,12 +45,20 @@ private:
     float dbLevelL;
     float dbLevelR;
     
+    static constexpr int refreshRate = 60;
+    
+    float decay = 0.0f;
+    float levelL = clampLevel;
+    float levelR = clampLevel;
+    
     int positionForLevel(float dbLevel) const noexcept
     {
         return int(std::round(juce::jmap(dbLevel, maxdB, mindB, maxPos, minPos)));
     }
     
     void drawLevel(juce::Graphics& g, float level, int x, int width);
+    
+    void updateLevel(float newLevel, float& smoothedLevel, float& leveldB) const;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LevelMeter)
 };

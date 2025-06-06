@@ -135,8 +135,8 @@ void DelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     
     tempo.reset();
     
-    levelL.store(0.0f);
-    levelR.store(0.0f);
+    levelL.reset();
+    levelR.reset();
 }
 
 void DelayAudioProcessor::releaseResources()
@@ -278,8 +278,8 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
         
     }
     
-    levelL.store(maxL);
-    levelR.store(maxR);
+    levelL.updateIfGreater(maxL);
+    levelR.updateIfGreater(maxR);
     
     #if JUCE_DEBUG
     protectYourEars(buffer);
