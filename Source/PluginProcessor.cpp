@@ -131,7 +131,7 @@ void DelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     delayInSamples = 0.0f;
     targetDelay = 0.0f;
     xfade = 0.0f;
-    xfadeInc = static_cast<float>(1.0 / 0.05 * sampleRate); //50ms
+    xfadeInc = static_cast<float>(1.0 / (0.1 * sampleRate)); //50ms
     
     tempo.reset();
     
@@ -209,11 +209,27 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
     float maxL = 0.0f;
     float maxR = 0.0f;
     
+    
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample) {
         
         params.smoothen();
-        float delayTime = params.tempoSync ? syncedTime : params.delayTime;
-        delayInSamples = (delayTime / 1000.0f) * sampleRate;
+        
+        if ((params.isCurrentlyAccelerating() && params.accelerateMode == 1) ||
+            (params.isCurrentlyDecelerating() && params.decelerateMode == 1)) {
+            
+            if (xfade == 0.0f) {
+                float delayTime = params.tempoSync ? syncedTime : params.delayTime;
+                targetDelay = (delayTime / 1000.0f) * sampleRate;
+                if (delayInSamples == 0.0f) {
+                    delayInSamples = targetDelay;
+                } else if (targetDelay != delayInSamples) {
+                    xfade = xfadeInc;
+                }
+            }
+        } else {
+            float delayTime = params.tempoSync ? syncedTime : params.delayTime;
+            delayInSamples = (delayTime / 1000.0f) * sampleRate;
+        }
         
         if (params.lowCut != lastLowCut) {
             lowCutFilter.setCutoffFrequency(params.lowCut);
@@ -255,6 +271,22 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
         
         float wetL = delayLineL.read(delayInSamples);
         float wetR = delayLineR.read(delayInSamples);
+        
+        
+        if (xfade > 0.0f) {
+            float newL = delayLineL.read(targetDelay);
+            float newR = delayLineR.read(targetDelay);
+            
+            wetL = (1.0f - xfade) * wetL + xfade * newL;
+            wetR = (1.0f - xfade) * wetR + xfade * newR;
+            
+            xfade += xfadeInc;
+
+            if (xfade >= 1.0f) {
+                delayInSamples = targetDelay;
+                xfade = 0.0f;
+            }
+        }
         
         wetL = lowCutFilter.processSample(0, wetL);
         wetL = highCutFilter.processSample(0, wetL);

@@ -294,7 +294,7 @@ void Parameters::smoothen() noexcept
 {
     gain = gainSmoother.getNextValue();
     
-    delayTime += (targetDelayTime - delayTime) * coeff;
+    delayTime = getSmoothenedDelayTime();
     
     mix = mixSmoother.getNextValue();
     
@@ -304,4 +304,24 @@ void Parameters::smoothen() noexcept
     highCut = highCutSmoother.getNextValue();
     
     invertStereo = invertStereoSmoother.getNextValue();
+}
+
+float Parameters::getSmoothenedDelayTime() noexcept
+{
+    
+    currentlyAccelerating = (targetDelayTime < delayTime);
+    currentlyDecelerating = (delayTime < targetDelayTime);
+    
+    return delayTime + (targetDelayTime - delayTime) * coeff;
+    
+}
+
+bool Parameters::isCurrentlyAccelerating() const noexcept
+{
+    return currentlyAccelerating;
+}
+
+bool Parameters::isCurrentlyDecelerating() const noexcept
+{
+    return currentlyDecelerating;
 }

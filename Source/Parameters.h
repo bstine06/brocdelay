@@ -44,6 +44,9 @@ public:
     void update() noexcept;
     void smoothen() noexcept;
     
+    bool isCurrentlyAccelerating() const noexcept;
+    bool isCurrentlyDecelerating() const noexcept;
+    
     float gain = 0.0f;
     float delayTime = 1.0f;
     float mix = 0.5f;
@@ -64,6 +67,10 @@ public:
     juce::AudioParameterBool* tempoSyncParam;
     
 private:
+    
+    float getSmoothenedDelayTime() noexcept;
+    bool currentlyAccelerating = false;
+    bool currentlyDecelerating = false;
     
     juce::AudioParameterFloat* gainParam;
     juce::LinearSmoothedValue<float> gainSmoother;
