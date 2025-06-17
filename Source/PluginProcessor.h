@@ -87,8 +87,15 @@ private:
     
     float delayInSamples = 0.0f;
     float targetDelay = 0.0f;
+    
     float xfade = 0.0f;
     float xfadeInc = 0.0f;
+    
+    float rampFade = 0.0f;
+    float rampFadeTarget = 0.0f;
+    float rampCoeff = 0.0f;
+    float rampWait = 0.0f;
+    float rampWaitInc = 0.0f;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DelayAudioProcessor)
 };

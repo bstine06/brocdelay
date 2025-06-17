@@ -11,6 +11,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "ShiftMode.h"
 
 namespace ParamIDs
 {
@@ -44,8 +45,7 @@ public:
     void update() noexcept;
     void smoothen() noexcept;
     
-    bool isCurrentlyAccelerating() const noexcept;
-    bool isCurrentlyDecelerating() const noexcept;
+    ShiftMode getShiftMode() const noexcept;
     
     float gain = 0.0f;
     float delayTime = 1.0f;
@@ -69,8 +69,10 @@ public:
 private:
     
     float getSmoothenedDelayTime() noexcept;
-    bool currentlyAccelerating = false;
-    bool currentlyDecelerating = false;
+    
+    void updateShiftMode() noexcept;
+    
+    ShiftMode shiftMode = ShiftMode::REPITCH;
     
     juce::AudioParameterFloat* gainParam;
     juce::LinearSmoothedValue<float> gainSmoother;

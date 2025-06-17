@@ -170,7 +170,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterL
     const juce::StringArray delayModes = {
         "Repitch",
         "Fade",
-        "Jump",
+        "Ramp",
     };
     
     layout.add(std::make_unique<juce::AudioParameterChoice>(
@@ -308,20 +308,27 @@ void Parameters::smoothen() noexcept
 
 float Parameters::getSmoothenedDelayTime() noexcept
 {
-    
-    currentlyAccelerating = (targetDelayTime < delayTime);
-    currentlyDecelerating = (delayTime < targetDelayTime);
-    
-    return delayTime + (targetDelayTime - delayTime) * coeff;
-    
+    updateShiftMode();
+    if (shiftMode == ShiftMode::REPITCH) {
+        return delayTime + (targetDelayTime - delayTime) * coeff;
+    } else {
+        return delayTime = targetDelayTime;
+    }
 }
 
-bool Parameters::isCurrentlyAccelerating() const noexcept
+ShiftMode Parameters::getShiftMode() const noexcept
 {
-    return currentlyAccelerating;
+    return shiftMode;
 }
 
-bool Parameters::isCurrentlyDecelerating() const noexcept
+void Parameters::updateShiftMode() noexcept
 {
-    return currentlyDecelerating;
+    if (targetDelayTime < delayTime) { // accelerating, get the acceleration mode
+        shiftMode = static_cast<ShiftMode>(accelerateMode);
+    }
+    else if (targetDelayTime > delayTime) { // decelerating, get the deceleration mode
+        shiftMode = static_cast<ShiftMode>(decelerateMode);
+    }
+    
+    // no update is required: once the delay time stops moving, the mode can stay where it was set
 }

@@ -130,8 +130,15 @@ void DelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     
     delayInSamples = 0.0f;
     targetDelay = 0.0f;
+    
     xfade = 0.0f;
-    xfadeInc = static_cast<float>(1.0 / (0.1 * sampleRate)); //50ms
+    xfadeInc = static_cast<float>(1.0 / (0.05 * sampleRate)); //50ms
+    
+    rampFade = 1.0f;
+    rampFadeTarget = 1.0f;
+    rampCoeff = 1.0f - std::exp(-1.0f / (0.05f * float(sampleRate)));
+    rampWait = 0.0f;
+    rampWaitInc = 1.0f / (0.05f * float(sampleRate)); // 50ms
     
     tempo.reset();
     
@@ -213,10 +220,9 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample) {
         
         params.smoothen();
+        ShiftMode shiftMode = params.getShiftMode();
         
-        if ((params.isCurrentlyAccelerating() && params.accelerateMode == 1) ||
-            (params.isCurrentlyDecelerating() && params.decelerateMode == 1)) {
-            
+        if (shiftMode == ShiftMode::FADE) {
             if (xfade == 0.0f) {
                 float delayTime = params.tempoSync ? syncedTime : params.delayTime;
                 targetDelay = (delayTime / 1000.0f) * sampleRate;
@@ -224,6 +230,19 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
                     delayInSamples = targetDelay;
                 } else if (targetDelay != delayInSamples) {
                     xfade = xfadeInc;
+                }
+            }
+        } else if (shiftMode == ShiftMode::RAMP) {
+            float delayTime = params.tempoSync ? syncedTime : params.delayTime;
+            float newTargetDelay = (delayTime / 1000.0f) * sampleRate;
+            if (newTargetDelay != targetDelay) {
+                targetDelay = newTargetDelay;
+                if (delayInSamples == 0.0f) {
+                    delayInSamples = targetDelay; // first time
+                }
+                else {
+                    rampWait = rampWaitInc; // start counter
+                    rampFadeTarget = 0.0f; // fade out
                 }
             }
         } else {
@@ -272,21 +291,39 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
         float wetL = delayLineL.read(delayInSamples);
         float wetR = delayLineR.read(delayInSamples);
         
-        
-        if (xfade > 0.0f) {
-            float newL = delayLineL.read(targetDelay);
-            float newR = delayLineR.read(targetDelay);
+        if (shiftMode == ShiftMode::FADE) {
+            if (xfade > 0.0f) {
+                float newL = delayLineL.read(targetDelay);
+                float newR = delayLineR.read(targetDelay);
+                
+                wetL = (1.0f - xfade) * wetL + xfade * newL;
+                wetR = (1.0f - xfade) * wetR + xfade * newR;
+                
+                xfade += xfadeInc;
+                
+                if (xfade >= 1.0f) {
+                    delayInSamples = targetDelay;
+                    xfade = 0.0f;
+                }
+            }
+        } else if (shiftMode == ShiftMode::RAMP) {
             
-            wetL = (1.0f - xfade) * wetL + xfade * newL;
-            wetR = (1.0f - xfade) * wetR + xfade * newR;
+            rampFade += (rampFadeTarget - rampFade) * rampCoeff;
             
-            xfade += xfadeInc;
-
-            if (xfade >= 1.0f) {
-                delayInSamples = targetDelay;
-                xfade = 0.0f;
+            wetL *= rampFade;
+            wetR *= rampFade;
+            
+            if (rampWait > 0.0f) {
+                rampWait += rampWaitInc;
+                if (rampWait >= 1.0f) {
+                    delayInSamples = targetDelay;
+                    rampWait = 0.0f;
+                    rampFadeTarget = 1.0f;
+                }
             }
         }
+        
+        
         
         wetL = lowCutFilter.processSample(0, wetL);
         wetL = highCutFilter.processSample(0, wetL);
