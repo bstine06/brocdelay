@@ -100,6 +100,7 @@ private:
     juce::LinearSmoothedValue<float> highCutSmoother;
     
     juce::AudioParameterChoice* delayNoteParam;
+    int lastDelayNote = 0;
     
     
     
