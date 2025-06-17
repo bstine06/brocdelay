@@ -97,5 +97,8 @@ private:
     float rampWait = 0.0f;
     float rampWaitInc = 0.0f;
     
+    float tempoSyncTargetDelayTime = 0.0f;
+    float tempoSyncCoeff = 0.0f;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DelayAudioProcessor)
 };

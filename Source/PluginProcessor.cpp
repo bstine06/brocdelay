@@ -142,6 +142,8 @@ void DelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     
     tempo.reset();
     
+    tempoSyncCoeff = 1.0f - std::exp(-1.0f / (0.2f * float(sampleRate)));
+    
     levelL.reset();
     levelR.reset();
 }
@@ -215,7 +217,7 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
     
     float maxL = 0.0f;
     float maxR = 0.0f;
-    
+    DBG("shiftMode: " << (params.getShiftMode() == ShiftMode::REPITCH ? "repitch" : "other"));
     
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample) {
         
@@ -246,8 +248,25 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
                 }
             }
         } else {
-            float delayTime = params.tempoSync ? syncedTime : params.delayTime;
-            delayInSamples = (delayTime / 1000.0f) * sampleRate;
+            float newTargetDelayMs = params.tempoSync ? syncedTime : params.delayTime;
+            float newTargetDelay = (newTargetDelayMs / 1000.0f) * sampleRate;
+
+            if (params.tempoSync) {
+                
+                if (targetDelay != newTargetDelay) {
+                    targetDelay = newTargetDelay;
+                }
+
+                if (delayInSamples == 0.0f) {
+                    delayInSamples = targetDelay; // first-time setup
+                } else {
+                    // Always smooth toward targetDelay every sample
+                    delayInSamples = (1.0f - tempoSyncCoeff) * delayInSamples + tempoSyncCoeff * targetDelay;
+                }
+            } else {
+                delayInSamples = newTargetDelay;
+                targetDelay = newTargetDelay; // keep them in sync for next time
+            }
         }
         
         if (params.lowCut != lastLowCut) {

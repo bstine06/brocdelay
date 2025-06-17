@@ -323,12 +323,23 @@ ShiftMode Parameters::getShiftMode() const noexcept
 
 void Parameters::updateShiftMode() noexcept
 {
-    if (targetDelayTime < delayTime) { // accelerating, get the acceleration mode
-        shiftMode = static_cast<ShiftMode>(accelerateMode);
+    if (!tempoSync) {
+        if (targetDelayTime < delayTime) { // accelerating, get the acceleration mode
+            shiftMode = static_cast<ShiftMode>(accelerateMode);
+        }
+        else if (targetDelayTime > delayTime) { // decelerating, get the deceleration mode
+            shiftMode = static_cast<ShiftMode>(decelerateMode);
+        }
+    } else {
+        if (delayNote == lastDelayNote) {
+            return;
+        } else {
+            bool isFaster = delayNote < lastDelayNote;
+            lastDelayNote = delayNote;
+            shiftMode = static_cast<ShiftMode>(isFaster ? accelerateMode : decelerateMode);
+        }
     }
-    else if (targetDelayTime > delayTime) { // decelerating, get the deceleration mode
-        shiftMode = static_cast<ShiftMode>(decelerateMode);
-    }
+    
     
     // no update is required: once the delay time stops moving, the mode can stay where it was set
 }
