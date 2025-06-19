@@ -134,11 +134,11 @@ void DelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     xfade = 0.0f;
     xfadeInc = static_cast<float>(1.0 / (0.05 * sampleRate)); //50ms
     
-    rampFade = 1.0f;
-    rampFadeTarget = 1.0f;
-    rampCoeff = 1.0f - std::exp(-1.0f / (0.05f * float(sampleRate)));
-    rampWait = 0.0f;
-    rampWaitInc = 1.0f / (0.05f * float(sampleRate)); // 50ms
+    duckFade = 1.0f;
+    duckFadeTarget = 1.0f;
+    duckCoeff = 1.0f - std::exp(-1.0f / (0.05f * float(sampleRate)));
+    duckWait = 0.0f;
+    duckWaitInc = 1.0f / (0.05f * float(sampleRate)); // 50ms
     
     tempo.reset();
     
@@ -234,7 +234,7 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
                     xfade = xfadeInc;
                 }
             }
-        } else if (shiftMode == ShiftMode::RAMP) {
+        } else if (shiftMode == ShiftMode::DUCK) {
             float delayTime = params.tempoSync ? syncedTime : params.delayTime;
             float newTargetDelay = (delayTime / 1000.0f) * sampleRate;
             if (newTargetDelay != targetDelay) {
@@ -243,8 +243,8 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
                     delayInSamples = targetDelay; // first time
                 }
                 else {
-                    rampWait = rampWaitInc; // start counter
-                    rampFadeTarget = 0.0f; // fade out
+                    duckWait = duckWaitInc; // start counter
+                    duckFadeTarget = 0.0f; // fade out
                 }
             }
         } else {
@@ -325,19 +325,19 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
                     xfade = 0.0f;
                 }
             }
-        } else if (shiftMode == ShiftMode::RAMP) {
+        } else if (shiftMode == ShiftMode::DUCK) {
             
-            rampFade += (rampFadeTarget - rampFade) * rampCoeff;
+            duckFade += (duckFadeTarget - duckFade) * duckCoeff;
             
-            wetL *= rampFade;
-            wetR *= rampFade;
+            wetL *= duckFade;
+            wetR *= duckFade;
             
-            if (rampWait > 0.0f) {
-                rampWait += rampWaitInc;
-                if (rampWait >= 1.0f) {
+            if (duckWait > 0.0f) {
+                duckWait += duckWaitInc;
+                if (duckWait >= 1.0f) {
                     delayInSamples = targetDelay;
-                    rampWait = 0.0f;
-                    rampFadeTarget = 1.0f;
+                    duckWait = 0.0f;
+                    duckFadeTarget = 1.0f;
                 }
             }
         }

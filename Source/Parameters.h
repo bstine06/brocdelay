@@ -26,6 +26,7 @@ namespace ParamIDs
     static const juce::ParameterID highCut { "highCut", 1 };
     static const juce::ParameterID tempoSync { "tempoSync", 1 };
     static const juce::ParameterID delayNote { "delayNote", 1};
+    static const juce::ParameterID bypass { "bypass", 1};
     // add more Parameter IDs here as needed
 }
 
@@ -66,6 +67,8 @@ public:
     
     juce::AudioParameterBool* tempoSyncParam;
     
+    bool bypass = false;
+    
 private:
     
     float getSmoothenedDelayTime() noexcept;
@@ -101,6 +104,8 @@ private:
     
     juce::AudioParameterChoice* delayNoteParam;
     int lastDelayNote = 0;
+    
+    const juce::AudioParameterBool* bypassParam;
     
     
     

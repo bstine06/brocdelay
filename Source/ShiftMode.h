@@ -13,5 +13,5 @@
 enum class ShiftMode {
     REPITCH,
     FADE,
-    RAMP
+    DUCK
 };

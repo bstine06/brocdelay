@@ -87,6 +87,7 @@ Parameters::Parameters(juce::AudioProcessorValueTreeState& apvts)
     castParameter(apvts, ParamIDs::decelerateMode, decelerateModeParam);
     castParameter(apvts, ParamIDs::tempoSync, tempoSyncParam);
     castParameter(apvts, ParamIDs::delayNote, delayNoteParam);
+    castParameter(apvts, ParamIDs::bypass, bypassParam);
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout() {
@@ -136,7 +137,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterL
                 //Parameter ID
                 ParamIDs::feedback,
                 "Feedback",
-                juce::NormalisableRange<float> { -100.0f, 100.0f, 1.0f },
+                juce::NormalisableRange<float> { -105.0f, 105.0f, 1.0f },
                 0.0f,
                 juce::AudioParameterFloatAttributes().withStringFromValueFunction(stringFromPercent)));
     
@@ -170,7 +171,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterL
     const juce::StringArray delayModes = {
         "Repitch",
         "Fade",
-        "Ramp",
+        "Duck",
     };
     
     layout.add(std::make_unique<juce::AudioParameterChoice>(
@@ -217,6 +218,12 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterL
                 "DelayNote",
                 noteLengths,
                 9 //"1/4"
+                ));
+    
+    layout.add(std::make_unique<juce::AudioParameterBool>(
+                ParamIDs::bypass,
+                "Bypass",
+                false
                 ));
     
     return layout;
@@ -288,6 +295,8 @@ void Parameters::update() noexcept
     
     delayNote = delayNoteParam->getIndex();
     tempoSync = tempoSyncParam->get();
+    
+    bypass = bypassParam->get();
 }
 
 void Parameters::smoothen() noexcept

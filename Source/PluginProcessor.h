@@ -91,13 +91,12 @@ private:
     float xfade = 0.0f;
     float xfadeInc = 0.0f;
     
-    float rampFade = 0.0f;
-    float rampFadeTarget = 0.0f;
-    float rampCoeff = 0.0f;
-    float rampWait = 0.0f;
-    float rampWaitInc = 0.0f;
+    float duckFade = 0.0f;
+    float duckFadeTarget = 0.0f;
+    float duckCoeff = 0.0f;
+    float duckWait = 0.0f;
+    float duckWaitInc = 0.0f;
     
-    float tempoSyncTargetDelayTime = 0.0f;
     float tempoSyncCoeff = 0.0f;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DelayAudioProcessor)
