@@ -46,7 +46,7 @@ public:
     void update() noexcept;
     void smoothen() noexcept;
     
-    ShiftMode getShiftMode() const noexcept;
+    ShiftMode determineShiftMode(const juce::AudioPlayHead *playhead) noexcept;
     
     float gain = 0.0f;
     float delayTime = 1.0f;
@@ -74,6 +74,9 @@ private:
     float getSmoothenedDelayTime() noexcept;
     
     void updateShiftMode() noexcept;
+    
+    int64_t timeInSamples = 0;
+    int64_t lastTimeInSamples = 0;
     
     ShiftMode shiftMode = ShiftMode::REPITCH;
     

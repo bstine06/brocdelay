@@ -217,12 +217,12 @@ void DelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[mayb
     
     float maxL = 0.0f;
     float maxR = 0.0f;
-    DBG("shiftMode: " << (params.getShiftMode() == ShiftMode::REPITCH ? "repitch" : "other"));
+//    DBG("shiftMode: " << (params.determineShiftMode(getPlayHead()) == ShiftMode::REPITCH ? "repitch" : "other"));
     
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample) {
         
         params.smoothen();
-        ShiftMode shiftMode = params.getShiftMode();
+        ShiftMode shiftMode = params.determineShiftMode(getPlayHead());
         
         if (shiftMode == ShiftMode::FADE) {
             if (xfade == 0.0f) {

@@ -325,8 +325,25 @@ float Parameters::getSmoothenedDelayTime() noexcept
     }
 }
 
-ShiftMode Parameters::getShiftMode() const noexcept
+ShiftMode Parameters::determineShiftMode(const juce::AudioPlayHead *playhead) noexcept
 {
+    if (playhead == nullptr) { return shiftMode; }
+    
+    const auto opt = playhead->getPosition();
+    
+    if (!opt.hasValue()) { return shiftMode; }
+    
+    const auto& pos = *opt;
+    
+    if (pos.getTimeInSamples().hasValue()) {
+        timeInSamples = *pos.getTimeInSamples();
+    }
+    
+    if (timeInSamples < lastTimeInSamples) {
+        return ShiftMode::DUCK;
+        // when looping, minimize unexpected artifacts by temporarily switching to duck mode
+    }
+    
     return shiftMode;
 }
 

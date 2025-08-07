@@ -59,7 +59,7 @@ namespace Colors
 
     namespace Footer
     {
-        const juce::Colour compliment { 150, 220, 150 };	
+        const juce::Colour footerText { 150, 220, 150 };	
     }
 }
 

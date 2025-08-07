@@ -13,7 +13,9 @@
 #include "LookAndFeel.h"
 
 //==============================================================================
-HorizontalSlider::HorizontalSlider(const juce::String& text, juce::AudioProcessorValueTreeState& apvts, const juce::ParameterID& parameterID) : attachment(apvts, parameterID.getParamID(), slider)
+HorizontalSlider::HorizontalSlider(const juce::String& text, juce::AudioProcessorValueTreeState& apvts, const juce::ParameterID& parameterID, const juce::String& tooltipText)
+    : attachment(apvts, parameterID.getParamID(), slider),
+      tooltipString(tooltipText)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -30,6 +32,8 @@ HorizontalSlider::HorizontalSlider(const juce::String& text, juce::AudioProcesso
     
     setLookAndFeel(HorizontalSliderLookAndFeel::get());
     
+    addMouseListener(this, true);
+    
     setSize(70, 60);
     
 }
@@ -45,4 +49,16 @@ void HorizontalSlider::resized()
     
     slider.setTopLeftPosition(0, 24);
 
+}
+
+void HorizontalSlider::mouseEnter(const juce::MouseEvent &event) {
+    DBG(tooltipString);
+    if (onHover)
+        onHover(tooltipString);
+}
+
+void HorizontalSlider::mouseExit(const juce::MouseEvent &event) {
+//    DBG("Mouse Exit Horizontal Slider!");
+    if (onHover)
+        onHover("");
 }

@@ -43,11 +43,14 @@ DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
     outputGroup.addAndMakeVisible(meter);
     addAndMakeVisible(outputGroup);
     
-    footerCompliment.setText("you're doing a good job!!", juce::dontSendNotification);
-    footerCompliment.setColour(juce::Label::textColourId, Colors::Footer::compliment);
-    footerCompliment.setJustificationType(juce::Justification::centred);
-    footerGroup.addAndMakeVisible(footerCompliment);
-    footerCompliment.setLookAndFeel(&footerLookAndFeel);
+    loadBrocQuotes();
+    footerGroup.addAndMakeVisible(brocHelper);
+    footerText.setText(getRandomQuote(), juce::dontSendNotification);
+    footerText.setColour(juce::Label::textColourId, Colors::Footer::footerText);
+    footerText.setJustificationType(juce::Justification::centredLeft);
+    footerText.setMinimumHorizontalScale(1.0f);
+    footerGroup.addAndMakeVisible(footerText);
+    footerText.setLookAndFeel(&footerLookAndFeel);
     addAndMakeVisible(footerGroup);
     
     setLookAndFeel(&mainLookAndFeel);
@@ -58,12 +61,24 @@ DelayAudioProcessorEditor::DelayAudioProcessorEditor (DelayAudioProcessor& p)
     
     updateDelayKnobs(audioProcessor.params.tempoSyncParam->get());
     audioProcessor.params.tempoSyncParam->addListener(this);
+    
+    setTooltipCallbackFor(delayTimeKnob, footerText);
+    setTooltipCallbackFor(delayNoteKnob, footerText);
+    setTooltipCallbackFor(tempoSyncSwitch, footerText);
+    setTooltipCallbackFor(accelerateModeKnob, footerText);
+    setTooltipCallbackFor(decelerateModeKnob, footerText);
+    setTooltipCallbackFor(feedbackKnob, footerText);
+    setTooltipCallbackFor(flipFlopSwitch, footerText);
+    setTooltipCallbackFor(lowCutKnob, footerText);
+    setTooltipCallbackFor(highCutKnob, footerText);
+    setTooltipCallbackFor(mixKnob, footerText);
+    setTooltipCallbackFor(gainKnob, footerText);
 }
 
 DelayAudioProcessorEditor::~DelayAudioProcessorEditor()
 {
     setLookAndFeel(nullptr);
-    footerCompliment.setLookAndFeel(nullptr);
+    footerText.setLookAndFeel(nullptr);
     
     audioProcessor.params.tempoSyncParam->removeListener(this);
 }
@@ -121,8 +136,14 @@ void DelayAudioProcessorEditor::resized()
     gainKnob.setTopLeftPosition(mixKnob.getX(), mixKnob.getBottom() + 10);
     meter.setBounds(outputGroup.getWidth() - 45, 30, 30, gainKnob.getBottom() - 30);
     
+
     
-    footerCompliment.setBounds(footerGroup.getLocalBounds().reduced(10));
+    auto footerBounds = footerGroup.getLocalBounds().reduced(10);
+
+    auto brocWidth = 60;
+    brocHelper.setBounds(footerBounds.removeFromLeft(brocWidth + 20));
+
+    footerText.setBounds(footerBounds); // Remaining space
 
     
     

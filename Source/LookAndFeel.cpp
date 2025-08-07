@@ -278,10 +278,10 @@ juce::Font MainLookAndFeel::getLabelFont([[maybe_unused]] juce::Label& label)
 
 FooterLookAndFeel::FooterLookAndFeel()
 {
-    setColour(juce::Label::textColourId, Colors::Footer::compliment);
+    setColour(juce::Label::textColourId, Colors::Footer::footerText);
 }
 
 juce::Font FooterLookAndFeel::getLabelFont([[maybe_unused]] juce::Label& label)
 {
-    return Fonts::getFont(36.0f);
+    return Fonts::getFont(18.0f);
 }

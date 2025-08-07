@@ -13,7 +13,9 @@
 #include "LookAndFeel.h"
 
 //==============================================================================
-RotaryKnob::RotaryKnob(const juce::String& text, juce::AudioProcessorValueTreeState& apvts, const juce::ParameterID& parameterID, bool drawFromMiddle) : attachment(apvts, parameterID.getParamID(), slider)
+RotaryKnob::RotaryKnob(const juce::String& text, juce::AudioProcessorValueTreeState& apvts, const juce::ParameterID& parameterID, const juce::String& tooltipText, bool drawFromMiddle)
+    : attachment(apvts, parameterID.getParamID(), slider),
+      tooltipString(tooltipText)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -34,6 +36,8 @@ RotaryKnob::RotaryKnob(const juce::String& text, juce::AudioProcessorValueTreeSt
     setLookAndFeel(RotaryKnobLookAndFeel::get());
     slider.getProperties().set("drawFromMiddle", drawFromMiddle);
     
+    addMouseListener(this, true);
+    
     setSize(70, 110);
     
 }
@@ -49,4 +53,16 @@ void RotaryKnob::resized()
     
     slider.setTopLeftPosition(0, 24);
 
+}
+
+void RotaryKnob::mouseEnter(const juce::MouseEvent &event) {
+    DBG(tooltipString);
+    if (onHover)
+        onHover(tooltipString); // Pass the tooltip to whoever is listening
+}
+
+void RotaryKnob::mouseExit(const juce::MouseEvent &event) {
+//    DBG(tooltipString);
+    if (onHover)
+        onHover("");
 }
