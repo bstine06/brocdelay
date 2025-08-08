@@ -2,11 +2,11 @@
 
 A healthy choice for your delay needs!
 
-![a preview image of the BrocDelay UI](BrocDelay_preview_image.png)
-
 ## Download
 
 This plugin is now officially released! To check out the latest release, [click here](https://github.com/bstine06/brocdelay/releases/tag/v1.0.1). Installation instructions for Mac and Windows are included in the README inside the zip for each build.
+
+![a preview image of the BrocDelay UI](BrocDelay_preview_image.png)
 
 ## Information
 
