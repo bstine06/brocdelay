@@ -2,6 +2,8 @@
 
 A healthy choice for your delay needs!
 
+![a preview image of the BrocDelay UI](BrocDelay_preview_image.png)
+
 ## Download
 
 This plugin is now officially released! To check out the latest release, [click here](https://github.com/bstine06/brocdelay/releases/tag/v1.0.1). Installation instructions for Mac and Windows are included in the README inside the zip for each build.
@@ -16,4 +18,4 @@ I highly recommend modulating/automating the delay time parameter with both sync
 
 This is my first audio effect plugin. I am using JUCE 8 with the Projucer GUI and following along with the concepts found in [The Complete Beginner’s Guide to Audio Plug-in Development by Matthijs Hollemans](https://www.theaudioprogrammer.com/books/beginners-plugin-book).
 
-This project is still in development. I encourage you to test it's current functionality and submit any issues, questions, or feature requests to this project's [GitHub issues page](https://github.com/bstine06/brocdelay/issues). Stay tuned for updates on this project and more plugins to come! Happy sound designing!
+I encourage you to test BrocDelay's current functionality and submit any issues, questions, or feature requests to this project's [GitHub issues page](https://github.com/bstine06/brocdelay/issues). Stay tuned for updates on this project and more plugins to come! Happy sound designing!
